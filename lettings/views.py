@@ -5,7 +5,18 @@ from lettings.models import Letting
 # Aenean leo magna, vestibulum et tincidunt fermentum, consectetur quis velit. Sed non placerat
 # massa. Integer est nunc, pulvinar a tempor et, bibendum id arcu. Vestibulum ante ipsum primis in
 # faucibus orci luctus et ultrices posuere cubilia curae; Cras eget scelerisque
-def lettings_index(request):
+def index(request):
+    """
+    View that allows you to display the homepage of properties for rent.
+
+        Parameters:
+            request: A Python object (an instance of the HttpRequest class) that contains
+            all the information sent by the user's browser to the server.
+
+        Returns:
+            render: A Django function that, based on a template and a context, returns
+            an HttpResponse object to the browser.
+    """
     lettings_list = Letting.objects.all()
     context = {'lettings_list': lettings_list}
     return render(request, 'lettings/index.html', context)
@@ -21,6 +32,18 @@ def lettings_index(request):
 # Sed non dolor risus. Mauris condimentum auctor elementum. Donec quis nisi ligula. Integer
 # vehicula tincidunt enim, ac lacinia augue pulvinar sit amet.
 def letting(request, letting_id):
+    """
+    View that allows you to display the presentation page of a property for rent.
+
+        Parameters:
+            request: A Python object (an instance of the HttpRequest class) that contains
+            all the information sent by the user's browser to the server.
+            letting_id (int): Location ID.
+
+        Returns:
+            render: A Django function that, based on a template and a context, returns
+            an HttpResponse object to the browser.
+    """
     letting = Letting.objects.get(id=letting_id)
     context = {
         'title': letting.title,
