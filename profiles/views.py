@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from profiles.models import Profile
 
 
@@ -41,6 +41,6 @@ def profile(request, username):
             render: A Django function that, based on a template and a context, returns
             an HttpResponse object to the browser.
     """
-    profile = Profile.objects.get(user__username=username)
+    profile = get_object_or_404(Profile, user__username=username)
     context = {'profile': profile}
     return render(request, 'profiles/profile.html', context)

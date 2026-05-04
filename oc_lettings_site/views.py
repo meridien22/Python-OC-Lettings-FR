@@ -23,12 +23,15 @@ def index(request):
         """
     return render(request, 'index.html')
 
+
 def error_404(request):
     raise Http404()
 
+
 def error_500(request):
-    resultat = 1 / 0
+    1 / 0
     return render(request, 'index.html')
+
 
 def error_404_custom(request, exception):
     """
@@ -45,6 +48,7 @@ def error_404_custom(request, exception):
             an HttpResponse object to the browser.
     """
     return render(request, '404.html', status=404)
+
 
 def error_500_custom(request, *args, **kwargs):
     """
