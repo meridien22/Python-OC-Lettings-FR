@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from profiles.models import Profile
+import logging
 
 
 # Sed placerat quam in pulvinar commodo. Nullam laoreet consectetur ex, sed consequat libero
@@ -43,4 +44,10 @@ def profile(request, username):
     """
     profile = get_object_or_404(Profile, user__username=username)
     context = {'profile': profile}
+    logging.info(
+        "Viewing a user profile.",
+        extra={
+            "username": username
+        }
+    )
     return render(request, 'profiles/profile.html', context)

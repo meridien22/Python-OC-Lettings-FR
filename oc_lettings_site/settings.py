@@ -1,6 +1,11 @@
 import os
-
+import sentry_sdk
+import logging
 from pathlib import Path
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
+from private.parameter import parameter
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -114,3 +119,35 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static",]
+
+logging.basicConfig(level=logging.INFO)
+
+sentry_sdk.init(
+    dsn=parameter["sentry_dns"],
+    integrations=[
+        DjangoIntegration(),
+        LoggingIntegration(
+            sentry_logs_level=logging.INFO,  # Capture INFO and above as logs
+            level=logging.INFO,              # Capture INFO and above as breadcrumbs
+            event_level=logging.ERROR,       # Send ERROR records as events
+        ),
+    ],
+    
+    # --- ERROR MONITORING ---
+    # Activé par défaut avec DjangoIntegration
+    
+    # --- TRACING / PERFORMANCE ---
+    # Pourcentage de transactions à capturer (1.0 = 100%)
+    # En production, on met souvent 0.1 pour ne pas saturer le quota
+    traces_sample_rate=1.0,
+    
+    # --- PROFILING ---
+    # Pourcentage de profils à capturer par rapport aux transactions
+    profiles_sample_rate=1.0,
+
+    # Envoyer les erreurs même si DEBUG=True (utile pour tester localement)
+    send_default_pii=True,
+
+    # Active la journalisation en tant que journaux Sentry
+    enable_logs=True,
+)

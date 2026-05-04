@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import Http404
+import sentry_sdk
 
 
 # Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque molestie quam lobortis
@@ -47,6 +48,7 @@ def error_404_custom(request, exception):
             render: A Django function that, based on a template and a context, returns
             an HttpResponse object to the browser.
     """
+    sentry_sdk.capture_message("Not Found", level="error")
     return render(request, '404.html', status=404)
 
 
@@ -64,4 +66,5 @@ def error_500_custom(request, *args, **kwargs):
             render: A Django function that, based on a template and a context, returns
             an HttpResponse object to the browser.
     """
+    sentry_sdk.capture_message("Internal Server Error", level="error")
     return render(request, '500.html', status=500)
