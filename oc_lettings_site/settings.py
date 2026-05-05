@@ -4,8 +4,9 @@ import logging
 from pathlib import Path
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
-from private.parameter import parameter
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,10 +16,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -120,30 +121,36 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static",]
 
+# le module logging produira des logs à partir du niveau INFO
+# rappel des niveaux : DEBUG, INFO, WARNING, ERROR, CRITICAL
 logging.basicConfig(level=logging.INFO)
 
 sentry_sdk.init(
-    dsn=parameter["sentry_dns"],
+    dsn=os.environ.get('SENTRY_DNS'),
     integrations=[
         DjangoIntegration(),
         LoggingIntegration(
-            sentry_logs_level=logging.INFO,  # Capture INFO and above as logs
-            level=logging.INFO,              # Capture INFO and above as breadcrumbs
-            event_level=logging.ERROR,       # Send ERROR records as events
+            # Défini le niveau pour les Breadcrumbs. Les dernières Breadcrumbs seront envoyées
+            # au moment ou une erreur (exception...) est capturée.
+            level=logging.INFO,
+            # Défini le niveau qui sera envoyé dans les logs de Sentry (Explore > Logs)
+            sentry_logs_level=logging.INFO,
+            # Défini le niveau à partir duqul seront générées des issues.
+            event_level=logging.ERROR,
         ),
     ],
-    
+
     # --- ERROR MONITORING ---
     # Activé par défaut avec DjangoIntegration
-    
+
     # --- TRACING / PERFORMANCE ---
     # Pourcentage de transactions à capturer (1.0 = 100%)
     # En production, on met souvent 0.1 pour ne pas saturer le quota
-    traces_sample_rate=1.0,
-    
+    # traces_sample_rate=1.0,
+
     # --- PROFILING ---
     # Pourcentage de profils à capturer par rapport aux transactions
-    profiles_sample_rate=1.0,
+    # profiles_sample_rate=1.0,
 
     # Envoyer les erreurs même si DEBUG=True (utile pour tester localement)
     send_default_pii=True,

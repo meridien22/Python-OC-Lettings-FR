@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from lettings.models import Letting
+import logging
 
 
 # Aenean leo magna, vestibulum et tincidunt fermentum, consectetur quis velit. Sed non placerat
@@ -49,4 +50,10 @@ def letting(request, letting_id):
         'title': letting.title,
         'address': letting.address,
     }
+    logging.info(
+        "Viewing a letting.",
+        extra={
+            "title": letting.title
+        }
+    )
     return render(request, 'lettings/letting.html', context)
