@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -47,6 +48,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# STORAGES = {
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
 
 ROOT_URLCONF = 'oc_lettings_site.urls'
 
@@ -116,9 +123,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+# Indique où rassembler tous les fichiers statiques pour la production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'
+
+# Indique où chercher les fichiers statiques pendant le développement
 STATICFILES_DIRS = [BASE_DIR / "static",]
 
 # le module logging produira des logs à partir du niveau INFO
@@ -126,7 +136,7 @@ STATICFILES_DIRS = [BASE_DIR / "static",]
 logging.basicConfig(level=logging.INFO)
 
 sentry_sdk.init(
-    dsn=os.environ.get('SENTRY_DNS'),
+    dsn=os.environ.get('SENTRY_DSN'),
     integrations=[
         DjangoIntegration(),
         LoggingIntegration(
