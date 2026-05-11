@@ -19,7 +19,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# Un variable d'environnement est toujours une chaine, il faut la transformer en booléen
+# 'False' == 'True' => False
+# 'True' == 'True' => True
+# 'N'importe quoi' == 'True' => False
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 

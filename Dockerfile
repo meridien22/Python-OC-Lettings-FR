@@ -51,5 +51,5 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Lancement de l'application
-# On utilise Gunicorn pour la production au lieu de runserver
+# On utilise gunicorn pour la production au lieu de runserver
 CMD ["gunicorn", "oc_lettings_site.wsgi:application", "--bind", "0.0.0.0:8000"]
